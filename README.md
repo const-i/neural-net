@@ -1,5 +1,7 @@
 # neural-net
 
+![Rust](https://github.com/const-i/neural-net/workflows/Rust/badge.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Neural Network library written completely in Rust implementing the back propagation
 algorithm with stochastic gradient decent.
 
