@@ -2,12 +2,12 @@
 //! algorithm with stochastic gradient decent.
 //!
 //! # Description
-//! This is a neural network library capable of learning through 
+//! This is a neural network library capable of learning through
 //! [Stochastic Gradient Decent](https://en.wikipedia.org/wiki/Stochastic_gradient_descent)
-//! using mini batches of the training data. This work is completely based on 
+//! using mini batches of the training data. This work is completely based on
 //! [this book](http://neuralnetworksanddeeplearning.com/) by [Micheal Nielsen](https://twitter.com/michael_nielsen).
 //! Currently it only trains using the Sigmoid function with a quadratic cost
-//! function, however that can be easily changed in the future. 
+//! function, however that can be easily changed in the future.
 //!
 //! # XOR Example
 //!
@@ -16,7 +16,7 @@
 //!  - Hidden Layer with 3 nodes
 //!  - Hidden Layer with 3 nodes
 //!  - Output Layer with 1 node
-//! 
+//!
 //! This network is then trained on the XOR function for 1000 epochs, using
 //! all 4 inputs per training data in sets of 2, and a learning rate of 5.0
 //!
@@ -43,9 +43,6 @@
 //!     assert!((nn_outputs[0] - outputs[i][0]).abs() < 0.1);
 //! }
 //! ```
-
-
-
 
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -75,7 +72,7 @@ struct Neuron {
     del_weight: Vec<f64>,
 }
 
-/// The base neuron which holds the its bias and weights for all the 
+/// The base neuron which holds the its bias and weights for all the
 /// neurons in the layer before it.
 impl Neuron {
     fn new(num_inputs: usize) -> Neuron {
@@ -96,7 +93,6 @@ impl Neuron {
     }
 }
 
-
 /// Used to store all the information for a single layer inside a neural network
 struct Layer {
     num_neurons: usize,
@@ -113,7 +109,7 @@ impl Layer {
     }
 }
 
-/// Used to store all the information for the neural network. It is built up of 
+/// Used to store all the information for the neural network. It is built up of
 /// the activation function for the neurons (Sigmoid) and its derivative
 /// (Sigmoid prime), the cost functions derivative (Quadratic Cost), the number
 /// and sizes of the layers in the network and the actual layers (composed of neurons)
@@ -193,8 +189,8 @@ impl NeuralNetwork {
             }
         }
     }
-	
-	/// This function is used to get the output of the network for a specified set of inputs)
+
+    /// This function is used to get the output of the network for a specified set of inputs)
     pub fn feed_forward(&mut self, inputs: &[f64]) -> Vec<f64> {
         // Propagate inputs
         self.propagate_inputs(inputs);
@@ -312,79 +308,85 @@ impl NeuralNetwork {
     }
 }
 
-/// Used to store all the information required to build and train a neural network. 
+/// Used to store all the information required to build and train a neural network.
 /// This includes the list of sizes of the layers, the inputs and outputs of a training
 /// dataset, the number of epochs to run the training for, the size of the mini batch
-/// of inputs to use at a time for the Stochastic Gradient Decent algorithm and 
+/// of inputs to use at a time for the Stochastic Gradient Decent algorithm and
 /// learning rate (eta).
 #[derive(Debug)]
 pub struct NeuralNetworkBuilder<'a> {
-	sizes: Vec<usize>,
-	inputs: &'a [Vec<f64>],
-	outputs: &'a [Vec<f64>],
-	epochs: usize,
-	mini_batch_size: usize, 
-	learning_rate: f64,
+    sizes: Vec<usize>,
+    inputs: &'a [Vec<f64>],
+    outputs: &'a [Vec<f64>],
+    epochs: usize,
+    mini_batch_size: usize,
+    learning_rate: f64,
 }
 
 /// The builder is responsible for building and training a neural network
 impl<'a> NeuralNetworkBuilder<'a> {
-	
-	/// This function creates a new builder and takes the sizes of the layers
-	/// and the inputs and outputs to train with.
-	pub fn new(sizes: Vec<usize>, inputs: &'a [Vec<f64>], outputs: &'a [Vec<f64>]) -> NeuralNetworkBuilder<'a> {
-		NeuralNetworkBuilder {
-			epochs: 1000,
-			mini_batch_size: inputs.len(), 
-			learning_rate: 1.0,
-			sizes,
-			inputs,
-			outputs,
-		}
-	}
-	
-	/// This specifies the epochs to train for. For every epoch the neural network will
-	/// training using the entire training dataset once. 
-	pub fn epochs(&mut self, epochs: usize) -> &mut NeuralNetworkBuilder<'a> {
-		self.epochs = epochs;
-		self
-	}
-	
-	/// This sets the size of the batches of training data to use for every iteration of updating the 
-	/// weights and biases of the network. This must be smaller than or equal to the length 
-	/// of the training dataset.
-	pub fn mini_batch_size(&mut self, mini_batch_size: usize) -> &mut NeuralNetworkBuilder<'a> {
-		self.mini_batch_size = mini_batch_size;
-		self
-	}
-	
-	/// This sets the speed at which the neural network learns. Higher means that the network will
-	/// learn faster but will be more prone to not converge, lower means that the network 
-	/// will learn slower and need more number of epochs to converge but with higher
-	/// probablity of converging.
-	pub fn learning_rate(&mut self, learning_rate: f64) -> &mut NeuralNetworkBuilder<'a> {
-		self.learning_rate = learning_rate;
-		self
-	}
-	
-	/// This is the terminal command to the builder and is used to create and train the neural
-	/// network. It will return the fully trained neural network.
-	pub fn train(&mut self) -> NeuralNetwork {
-		let mut nn = NeuralNetwork::new(sigmoid, sigmoid_prime, cost_derivative, self.sizes.clone());
-		nn.stochastic_gradient_decent(&self.inputs, &self.outputs, self.epochs, self.mini_batch_size, self.learning_rate);
-		nn
-	}
-	
+    /// This function creates a new builder and takes the sizes of the layers
+    /// and the inputs and outputs to train with.
+    pub fn new(
+        sizes: Vec<usize>,
+        inputs: &'a [Vec<f64>],
+        outputs: &'a [Vec<f64>],
+    ) -> NeuralNetworkBuilder<'a> {
+        NeuralNetworkBuilder {
+            epochs: 1000,
+            mini_batch_size: inputs.len(),
+            learning_rate: 1.0,
+            sizes,
+            inputs,
+            outputs,
+        }
+    }
+
+    /// This specifies the epochs to train for. For every epoch the neural network will
+    /// training using the entire training dataset once.
+    pub fn epochs(&mut self, epochs: usize) -> &mut NeuralNetworkBuilder<'a> {
+        self.epochs = epochs;
+        self
+    }
+
+    /// This sets the size of the batches of training data to use for every iteration of updating the
+    /// weights and biases of the network. This must be smaller than or equal to the length
+    /// of the training dataset.
+    pub fn mini_batch_size(&mut self, mini_batch_size: usize) -> &mut NeuralNetworkBuilder<'a> {
+        self.mini_batch_size = mini_batch_size;
+        self
+    }
+
+    /// This sets the speed at which the neural network learns. Higher means that the network will
+    /// learn faster but will be more prone to not converge, lower means that the network
+    /// will learn slower and need more number of epochs to converge but with higher
+    /// probablity of converging.
+    pub fn learning_rate(&mut self, learning_rate: f64) -> &mut NeuralNetworkBuilder<'a> {
+        self.learning_rate = learning_rate;
+        self
+    }
+
+    /// This is the terminal command to the builder and is used to create and train the neural
+    /// network. It will return the fully trained neural network.
+    pub fn train(&mut self) -> NeuralNetwork {
+        let mut nn =
+            NeuralNetwork::new(sigmoid, sigmoid_prime, cost_derivative, self.sizes.clone());
+        nn.stochastic_gradient_decent(
+            &self.inputs,
+            &self.outputs,
+            self.epochs,
+            self.mini_batch_size,
+            self.learning_rate,
+        );
+        nn
+    }
 }
-
-
-
 
 #[cfg(test)]
 mod tests {
 
-	use super::*;
-	
+    use super::*;
+
     #[test]
     fn test_layer_stochastic_gradient_decent() {
         let sizes: Vec<usize> = vec![2, 3, 1];
@@ -414,10 +416,9 @@ mod tests {
         }
         //assert!(false);
     }
-    
+
     #[test]
     fn test_network_builder() {
-		
         let sizes: Vec<usize> = vec![2, 3, 3, 1];
         let inputs: Vec<Vec<f64>> = vec![
             vec![0.0, 0.0],
@@ -426,18 +427,18 @@ mod tests {
             vec![1.0, 1.0],
         ];
         let outputs: Vec<Vec<f64>> = vec![vec![0.0], vec![1.0], vec![1.0], vec![0.0]];
-		
-		let mut nn = NeuralNetworkBuilder::new(sizes, &inputs, &outputs)
-					.epochs(1000)
-					.mini_batch_size(2)
-					.learning_rate(5.0)
-					.train();
-		
-		for i in 0..inputs.len() {
+
+        let mut nn = NeuralNetworkBuilder::new(sizes, &inputs, &outputs)
+            .epochs(1000)
+            .mini_batch_size(2)
+            .learning_rate(5.0)
+            .train();
+
+        for i in 0..inputs.len() {
             let nn_outputs = nn.feed_forward(&inputs[i]);
             assert!((nn_outputs[0] - outputs[i][0]).abs() < 0.1);
             //println!("{:?}: {:.2}, ({:.2})", inputs[i], nn_outputs[0], outputs[i][0]);
         }
-		//assert!(false);
-	}
+        //assert!(false);
+    }
 }
